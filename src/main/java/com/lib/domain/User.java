@@ -59,7 +59,7 @@ public class User {
 	
 	@NotNull(message = "Password can not be null")
     @NotBlank(message = "Password can not be white space")
-    @Size(min =4,max = 25,message = "Password '${validatedValue}' must be between {min} and {max} long")
+    @Size(min =4,max = 255,message = "Password '${validatedValue}' must be between {min} and {max} long")
 	@Column(name="password",length = 255, nullable = false)
 	private String password;
 
