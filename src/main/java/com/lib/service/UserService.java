@@ -1,6 +1,7 @@
 package com.lib.service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,9 +43,11 @@ public class UserService {
 		user.setRoles(roles);
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		
-		userRepository.save(user);
-		
+		userRepository.save(user);		
 	}
-
 	
+	public  List<User> getAll() {
+
+        return userRepository.findAll();
+    }	
 }
