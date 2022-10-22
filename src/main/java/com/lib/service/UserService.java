@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.lib.repository.RoleRepository;
 import com.lib.repository.UserRepository;
+import com.lib.controller.dto.UpdateRequestDTO;
 import com.lib.domain.Role;
 import com.lib.domain.User;
 import com.lib.domain.enums.UserRole;
@@ -60,4 +61,44 @@ public class UserService {
 		return userRepository.findById(id).
 		orElseThrow(()-> new ResourceNotFoundException("User not found with id : " + id));
 	}
+	
+	
+	public void updateUser(Long id, UpdateRequestDTO updateRequestDTO) {
+		
+	boolean emailExist=	userRepository.existsByUserMail(updateRequestDTO.getUserMail());
+	
+	User user= findUser(id);
+	
+	if (emailExist && !updateRequestDTO.getUserMail().equals(user.getUserMail())) {
+		throw new ConflictException("email is already exist");
+		
+	}
+	user.setFirstName(updateRequestDTO.getFirstName());
+	user.setLastName(updateRequestDTO.getLastName());
+	user.setUserMail(updateRequestDTO.getUserMail());
+	//user.setPassword(updateRequestDTO.getPassword());
+	user.setPhoneNumber(updateRequestDTO.getPhoneNumber());
+	user.setPassword(passwordEncoder.encode(updateRequestDTO.getPassword()));
+	userRepository.save(user);
+	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
