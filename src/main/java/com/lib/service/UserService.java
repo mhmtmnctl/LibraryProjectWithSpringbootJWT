@@ -49,5 +49,15 @@ public class UserService {
 	public  List<User> getAll() {
 
         return userRepository.findAll();
-    }	
+    }
+	
+	public void deleteUser(Long id) {
+		 User user = findUser(id);
+		 userRepository.delete(user);		
+	}
+	
+	public User findUser(Long id) {
+		return userRepository.findById(id).
+		orElseThrow(()-> new ResourceNotFoundException("User not found with id : " + id));
+	}
 }

@@ -11,7 +11,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,6 +68,18 @@ public class UserJWTController {
 		List<User> users=  userService.getAll();
 		return ResponseEntity.ok(users);		
 	}
+	
+	@DeleteMapping("/delete/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")//sadece admin silebilsin.
+    public ResponseEntity<Map<String,String>> deleteUser(@PathVariable("id") Long id) {
+        userService.deleteUser(id);
+        Map<String,String> map = new HashMap<>();
+        map.put("message", "User is deleted successfuly");
+        map.put("status", "true");
+        return new ResponseEntity<>(map,HttpStatus.OK);
+        //todo kullanıcının iade etmediği kitabı varsa silinemesin.
+        
+    }
 	
 	
 	
