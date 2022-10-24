@@ -25,6 +25,7 @@ import com.lib.service.UserService;
 import com.lib.controller.dto.AddBookRequestDTO;
 import com.lib.controller.dto.RegisterRequest;
 import com.lib.controller.dto.UpdateRequestDTO;
+import com.lib.domain.Book;
 import com.lib.domain.User;
 
 import lombok.AllArgsConstructor;
@@ -32,6 +33,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping
 @AllArgsConstructor
+
 public class UserJWTController {
 	@Autowired
 	private UserService userService;
@@ -75,7 +77,7 @@ public class UserJWTController {
 		return ResponseEntity.ok(users);		
 	}
 	
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/deleteUser/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")//sadece admin silebilsin.
     public ResponseEntity<Map<String,String>> deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
@@ -86,18 +88,18 @@ public class UserJWTController {
         //todo kullanıcının iade etmediği kitabı varsa silinemesin.      
     }
 	
-	@PutMapping("/update/{id}")
-	@PreAuthorize("hasRole('ROLE_ADMIN')or hasRole('ROLE_USER')")
-	public ResponseEntity<Map<String, String>> updateUser( @PathVariable Long id, @RequestBody UpdateRequestDTO updateRequestDTO){
-		
-		userService.updateUser(id,updateRequestDTO);
-		Map<String,String> map = new HashMap<>();
-		map.put("message", "User is updated successfuly");
-		map.put("status", "true");
-		return new ResponseEntity<>(map,HttpStatus.OK);
-	}
+	@PutMapping("/updateUser/{id}")//.../students/1
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<Map<String, String>> updateUser( @PathVariable Long id, @RequestBody UpdateRequestDTO updateRequestDTO){
+
+        userService.updateUser(id,updateRequestDTO);
+        Map<String,String> map = new HashMap<>();
+        map.put("message", "User is updated successfuly");
+        map.put("status", "true");
+        return new ResponseEntity<>(map,HttpStatus.OK);
+    }
 	
-	
+	//kitap ekleme
 	@PostMapping("/addBook")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Map<String,String>> addBook (@Valid @RequestBody AddBookRequestDTO request ) {
@@ -107,6 +109,41 @@ public class UserJWTController {
 		map.put("status", "true");
 		return new ResponseEntity<>(map,HttpStatus.CREATED);		
 	}
+	
+	//kitap listeleme
+	
+	@GetMapping("/listBooks")
+	@PreAuthorize("hasRole('ROLE_ADMIN')or hasRole('ROLE_USER')")
+	public ResponseEntity<List<Book>> getAllBooks() {		
+		List<Book> books=  bookService.getAllBooks();
+		return ResponseEntity.ok(books);		
+	}
+	
+	//kitap silme
+	
+	@DeleteMapping("/deleteBook/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")//sadece admin silebilsin.
+    public ResponseEntity<Map<String,String>> deleteBook(@PathVariable("id") Long id) {
+        bookService.deleteBook(id);
+        Map<String,String> map = new HashMap<>();
+        map.put("message", "Book is deleted successfuly");
+        map.put("status", "true");
+        return new ResponseEntity<>(map,HttpStatus.OK);		
+	}
+	
+	//kitap güncelleme
+	
+	@PutMapping("/updateBook/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')or hasRole('ROLE_USER')")
+	public ResponseEntity<Map<String, String>> updateBook( @PathVariable Long id, @RequestBody AddBookRequestDTO addBookRequestDTO){
+		
+		bookService.updateBook(id,addBookRequestDTO);
+		Map<String,String> map = new HashMap<>();
+		map.put("message", "Book is updated successfuly");
+		map.put("status", "true");
+		return new ResponseEntity<>(map,HttpStatus.OK);
+	}
+	
 	
 	
 }
