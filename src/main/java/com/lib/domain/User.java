@@ -1,7 +1,6 @@
 package com.lib.domain;
-import java.util.ArrayList;
+
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -69,8 +67,8 @@ public class User {
 	@Column(name="phoneNumber",length = 20, nullable = true)
 	private String phoneNumber;	
 	
-	@OneToMany(mappedBy="user",orphanRemoval=true)
-	private List<Book> books=new ArrayList<>();
+	//@OneToMany(mappedBy="user",orphanRemoval=true)
+	//private List<Book> books=new ArrayList<>();
 	
 	@JoinTable(name="tbl_user_role",joinColumns=@JoinColumn(name="user_id"),inverseJoinColumns = @JoinColumn(name="role_id"))
 	@ManyToMany(fetch=FetchType.EAGER)

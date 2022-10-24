@@ -76,12 +76,13 @@ public class UserService {
 	user.setFirstName(updateRequestDTO.getFirstName());
 	user.setLastName(updateRequestDTO.getLastName());
 	user.setUserMail(updateRequestDTO.getUserMail());
-	//user.setPassword(updateRequestDTO.getPassword());
 	user.setPhoneNumber(updateRequestDTO.getPhoneNumber());
 	user.setPassword(passwordEncoder.encode(updateRequestDTO.getPassword()));
 	userRepository.save(user);
 	
 	}
+
+	
 	
 	
 	

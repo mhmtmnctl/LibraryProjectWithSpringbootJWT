@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.lib.security.JwtUtils;
+import com.lib.service.BookService;
 import com.lib.service.UserService;
+import com.lib.controller.dto.AddBookRequestDTO;
 import com.lib.controller.dto.RegisterRequest;
 import com.lib.controller.dto.UpdateRequestDTO;
 import com.lib.domain.User;
@@ -33,6 +35,9 @@ import lombok.AllArgsConstructor;
 public class UserJWTController {
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private BookService bookService;
 	
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -93,15 +98,15 @@ public class UserJWTController {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	@PostMapping("/addBook")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<Map<String,String>> addBook (@Valid @RequestBody AddBookRequestDTO request ) {
+		bookService.addBook(request);		
+		Map<String,String> map = new HashMap<>();
+		map.put("message",	" Book added successfuly");
+		map.put("status", "true");
+		return new ResponseEntity<>(map,HttpStatus.CREATED);		
+	}
 	
 	
 }
