@@ -23,6 +23,7 @@ import com.lib.security.JwtUtils;
 import com.lib.service.BookService;
 import com.lib.service.UserService;
 import com.lib.controller.dto.AddBookRequestDTO;
+import com.lib.controller.dto.LoginRequest;
 import com.lib.controller.dto.RegisterRequest;
 import com.lib.controller.dto.UpdateRequestDTO;
 import com.lib.domain.Book;
@@ -46,6 +47,7 @@ public class UserJWTController {
 	
 	@Autowired
 	JwtUtils jwtUtils;
+
 	
 	@PostMapping("/register")
 	public ResponseEntity<Map<String,String>> registerUser (@Valid @RequestBody RegisterRequest request ) {
@@ -143,6 +145,28 @@ public class UserJWTController {
 		map.put("status", "true");
 		return new ResponseEntity<>(map,HttpStatus.OK);
 	}
+	
+	//kullanıcı kitap alcak...
+	
+	@GetMapping("/getBook/{id}")
+	@PreAuthorize("hasRole('ROLE_USER')")
+	 public ResponseEntity<Map<String,String>> getBook(@PathVariable("id") Long id) {
+        bookService.getBook(id);
+        Map<String,String> map = new HashMap<>();
+        map.put("message", "Book is taken successfuly");
+        map.put("status", "true");        
+        return new ResponseEntity<>(map,HttpStatus.OK);		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

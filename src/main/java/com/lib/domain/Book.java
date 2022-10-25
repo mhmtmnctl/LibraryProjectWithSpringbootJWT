@@ -49,14 +49,14 @@ public class Book {
 	
 		//kitap durumu 
 	@Column (name="status",length=10,nullable=false)
-	private String status;
+	private Boolean status;
 	
 	//alınma tarihi
 	@Column (name="date",length=10,nullable=false)
 	private String date;
 	
 	//alan kişi maili
-	@Column (name="owner",length=50,nullable=false)
+	@Column (name="owner",length=50,nullable=true)
 	private String owner;
 	
 	//@ManyToOne

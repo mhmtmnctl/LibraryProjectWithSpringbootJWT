@@ -29,7 +29,7 @@ public class AddBookRequestDTO {
 	
 		//kitap durumu 
 	
-	private String status;
+	private Boolean status;
 	
 	//alınma tarihi
 	
