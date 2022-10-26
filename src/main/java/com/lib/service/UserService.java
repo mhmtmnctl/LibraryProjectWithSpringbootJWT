@@ -62,6 +62,11 @@ public class UserService {
 		orElseThrow(()-> new ResourceNotFoundException("User not found with id : " + id));
 	}
 	
+	public User findUserByMailUser(String loginOlanUserMaili) {
+		return userRepository.findByUserMail(loginOlanUserMaili).
+		orElseThrow(()-> new ResourceNotFoundException("User not found with mail : " + loginOlanUserMaili));
+	}
+	
 	
 	public void updateUser(Long id, UpdateRequestDTO updateRequestDTO) {
 		
@@ -78,8 +83,7 @@ public class UserService {
 	user.setUserMail(updateRequestDTO.getUserMail());
 	user.setPhoneNumber(updateRequestDTO.getPhoneNumber());
 	user.setPassword(passwordEncoder.encode(updateRequestDTO.getPassword()));
-	userRepository.save(user);
-	
+	userRepository.save(user);	
 	}
 
 	

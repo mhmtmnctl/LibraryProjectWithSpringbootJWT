@@ -11,6 +11,7 @@ public class LoginRequest{
 		@NotNull
 		private String userMail;
 		
+		
 		@NotBlank
 		@NotNull
 		private String password;	

@@ -5,9 +5,10 @@ import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.lib.controller.UserJWTController;
 import com.lib.controller.dto.AddBookRequestDTO;
-import com.lib.controller.dto.LoginRequest;
 import com.lib.domain.Book;
+import com.lib.domain.User;
 import com.lib.exception.ResourceNotFoundException;
 import com.lib.repository.BookRepository;
 import com.lib.repository.UserRepository;
@@ -18,13 +19,17 @@ public class BookService {
 	@Autowired
 	UserRepository userRepository;//gerek olmayabalir.
 	
+	@Autowired
+	UserService userService;
+	
 	//@Autowired
 	//LoginRequest loginRequest;
 	
 	@Autowired
 	BookRepository bookRepository;	
 	
-	LoginRequest loginRequest = new LoginRequest();
+	
+//	LoginRequest loginRequest = new LoginRequest();//dto dan bean oluşur mu?
 	
 	public void addBook(@Valid AddBookRequestDTO request) {
 		
@@ -80,21 +85,18 @@ public class BookService {
 	}
 	
 	//kullanıcı kitap alma metodu
-	public void getBook(Long id) {
+	public void getBook(Long id,String loginOlanUserMaili) {
 		
-		String loginMail = loginRequest.getUserMail();
-		System.out.println(loginMail);
+		//String loginMail = loginRequest.getUserMail();
+		//System.out.println(loginMail);
+		User loginUser=  (userService.findUserByMailUser(UserJWTController.loginOlanUserMaili));
 		
 		Book book= findBook(id);
-		boolean exist = bookRepository.existsById(id);
-		if (exist){
 			
-			book.setOwner(loginMail);
+			book.setOwner(loginUser.getUserMail());
 			book.setStatus(false);
 			book.setDate(LocalDate.now().toString());
-			bookRepository.save(book);						
-		}
-		
+			bookRepository.save(book);										
 	}
 
 }

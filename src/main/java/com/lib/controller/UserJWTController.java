@@ -19,24 +19,26 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.lib.security.JwtUtils;
-import com.lib.service.BookService;
-import com.lib.service.UserService;
 import com.lib.controller.dto.AddBookRequestDTO;
 import com.lib.controller.dto.LoginRequest;
 import com.lib.controller.dto.RegisterRequest;
 import com.lib.controller.dto.UpdateRequestDTO;
 import com.lib.domain.Book;
 import com.lib.domain.User;
-
+import com.lib.security.JwtUtils;
+import com.lib.service.BookService;
+import com.lib.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @RestController
 @RequestMapping
 @AllArgsConstructor
+@NoArgsConstructor
+
 
 public class UserJWTController {
-	@Autowired
+	@Autowired//@allargscons olunca autowired gerek kalmıyor
 	private UserService userService;
 	
 	@Autowired
@@ -49,6 +51,9 @@ public class UserJWTController {
 	JwtUtils jwtUtils;
 
 	
+	@Autowired
+	public static String loginOlanUserMaili;
+	
 	@PostMapping("/register")
 	public ResponseEntity<Map<String,String>> registerUser (@Valid @RequestBody RegisterRequest request ) {
 		userService.registerUser(request);		
@@ -59,10 +64,12 @@ public class UserJWTController {
 	}
 	
 	@GetMapping("/login")
-	public ResponseEntity<Map<String,String>> login(@Valid @RequestBody com.lib.controller.dto.LoginRequest request){
+	public ResponseEntity<Map<String,String>> login(@Valid @RequestBody LoginRequest request){
 		
 		Authentication  authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(request.getUserMail(), request.getPassword()));
+		
+		  loginOlanUserMaili=request.getUserMail();
 		
 		String token = jwtUtils.generateToken(authentication);
 		
@@ -148,13 +155,15 @@ public class UserJWTController {
 	
 	//kullanıcı kitap alcak...
 	
-	@GetMapping("/getBook/{id}")
+	@PutMapping("/getBook/{id}")//kitap bilgilerini güncellediğimiz için put olsun.
 	@PreAuthorize("hasRole('ROLE_USER')")
-	 public ResponseEntity<Map<String,String>> getBook(@PathVariable("id") Long id) {
-        bookService.getBook(id);
+	 public ResponseEntity<Map<String,String>> getBook(@PathVariable("id") Long id,String loginOlanUserMaili ) {
+	
+        bookService.getBook(id,UserJWTController.loginOlanUserMaili);
         Map<String,String> map = new HashMap<>();
         map.put("message", "Book is taken successfuly");
-        map.put("status", "true");        
+        map.put("status", "true");
+        map.put("taken by", UserJWTController.loginOlanUserMaili);
         return new ResponseEntity<>(map,HttpStatus.OK);		
 	}
 	
