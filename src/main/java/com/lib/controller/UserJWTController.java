@@ -3,6 +3,8 @@ package com.lib.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,8 +53,8 @@ public class UserJWTController {
 	JwtUtils jwtUtils;
 
 	
-	@Autowired
-	public static String loginOlanUserMaili;
+	//@Autowired
+	//public static String loginOlanUserMaili;
 	
 	@PostMapping("/register")
 	public ResponseEntity<Map<String,String>> registerUser (@Valid @RequestBody RegisterRequest request ) {
@@ -69,7 +71,7 @@ public class UserJWTController {
 		Authentication  authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(request.getUserMail(), request.getPassword()));
 		
-		  loginOlanUserMaili=request.getUserMail();
+		 // loginOlanUserMaili=request.getUserMail();
 		
 		String token = jwtUtils.generateToken(authentication);
 		
@@ -157,15 +159,35 @@ public class UserJWTController {
 	
 	@PutMapping("/getBook/{id}")//kitap bilgilerini güncellediğimiz için put olsun.
 	@PreAuthorize("hasRole('ROLE_USER')")
-	 public ResponseEntity<Map<String,String>> getBook(@PathVariable("id") Long id,String loginOlanUserMaili ) {
+	 public ResponseEntity<Map<String,String>> getBook(@PathVariable("id") Long id,HttpServletRequest request) {
 	
-        bookService.getBook(id,UserJWTController.loginOlanUserMaili);
+		String mail=(String) request.getAttribute("mail");
+        bookService.getBook(id,mail);
         Map<String,String> map = new HashMap<>();
         map.put("message", "Book is taken successfuly");
         map.put("status", "true");
-        map.put("taken by", UserJWTController.loginOlanUserMaili);
+        map.put("taken by", mail);
         return new ResponseEntity<>(map,HttpStatus.OK);		
 	}
+	
+	
+	//kullanıcı kitap iade edecek
+	
+	@PutMapping("/returnBook/{id}")//kitap bilgilerini güncellediğimiz için put olsun.
+	@PreAuthorize("hasRole('ROLE_USER')")
+	 public ResponseEntity<Map<String,String>> returnBook(@PathVariable("id") Long id,HttpServletRequest request) {
+	
+		String mail=(String) request.getAttribute("mail");
+        bookService.returnBook(id,mail);
+        Map<String,String> map = new HashMap<>();
+        map.put("message", "Book is returned successfuly");
+        map.put("status", "true");
+        map.put("returned by", mail);
+        return new ResponseEntity<>(map,HttpStatus.OK);		
+	}
+	
+	
+	
 	
 	
 	
