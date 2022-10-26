@@ -94,9 +94,14 @@ public class BookService {
 		book.setOwner("");
 		book.setStatus(true);
 		book.setDate("");
-		bookRepository.save(book);	
+		bookRepository.save(book);		
+	}
+
+	public List<Book> getMyBooks(String mail) {
 		
+		List<Book> myBooks= bookRepository.findAllByOwner(mail);		
 		
+		return myBooks;
 	}
 
 }

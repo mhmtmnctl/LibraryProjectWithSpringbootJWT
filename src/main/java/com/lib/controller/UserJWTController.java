@@ -186,6 +186,19 @@ public class UserJWTController {
         return new ResponseEntity<>(map,HttpStatus.OK);		
 	}
 	
+	//kullanıcının aldığı kitaplar.
+	
+	@GetMapping("/listMyBooks")//kitap bilgilerini güncellediğimiz için put olsun.
+	@PreAuthorize("hasRole('ROLE_ADMIN')or hasRole('ROLE_USER')")
+	
+	public ResponseEntity<List<Book>> getMyBooks(HttpServletRequest request){
+		String mail=(String) request.getAttribute("mail");
+		List<Book> books = bookService.getMyBooks(mail);
+		return ResponseEntity.ok(books);
+		
+	}
+	
+	
 	
 	
 	
