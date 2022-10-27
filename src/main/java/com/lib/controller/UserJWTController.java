@@ -3,7 +3,6 @@ package com.lib.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +36,7 @@ import lombok.NoArgsConstructor;
 @RequestMapping
 @AllArgsConstructor
 @NoArgsConstructor
-
-
-public class UserJWTController {
+public class UserJWTController{
 	@Autowired//@allargscons olunca autowired gerek kalmıyor
 	private UserService userService;
 	
@@ -130,8 +127,7 @@ public class UserJWTController {
 		return ResponseEntity.ok(books);		
 	}
 	
-	//kitap silme
-	
+	//kitap silme	
 	@DeleteMapping("/deleteBook/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")//sadece admin silebilsin.
     public ResponseEntity<Map<String,String>> deleteBook(@PathVariable("id") Long id) {
@@ -142,8 +138,7 @@ public class UserJWTController {
         return new ResponseEntity<>(map,HttpStatus.OK);		
 	}
 	
-	//kitap güncelleme
-	
+	//kitap güncelleme	
 	@PutMapping("/updateBook/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')or hasRole('ROLE_USER')")
 	public ResponseEntity<Map<String, String>> updateBook( @PathVariable Long id, @RequestBody AddBookRequestDTO addBookRequestDTO){
@@ -156,7 +151,8 @@ public class UserJWTController {
 	}
 	
 	//kullanıcı kitap alcak...
-	
+	//todo alınmışsa alamasın...
+	//max 3 kitap alabilsin.
 	@PutMapping("/getBook/{id}")//kitap bilgilerini güncellediğimiz için put olsun.
 	@PreAuthorize("hasRole('ROLE_USER')")
 	 public ResponseEntity<Map<String,String>> getBook(@PathVariable("id") Long id,HttpServletRequest request) {
@@ -171,8 +167,7 @@ public class UserJWTController {
 	}
 	
 	
-	//kullanıcı kitap iade edecek
-	
+	//kullanıcı kitap iade edecek	
 	@PutMapping("/returnBook/{id}")//kitap bilgilerini güncellediğimiz için put olsun.
 	@PreAuthorize("hasRole('ROLE_USER')")
 	 public ResponseEntity<Map<String,String>> returnBook(@PathVariable("id") Long id,HttpServletRequest request) {
@@ -184,34 +179,34 @@ public class UserJWTController {
         map.put("status", "true");
         map.put("returned by", mail);
         return new ResponseEntity<>(map,HttpStatus.OK);		
-	}
-	
-	//kullanıcının aldığı kitaplar.
-	
+	}	
+	//kullanıcının aldığı kitaplar.	
 	@GetMapping("/listMyBooks")//kitap bilgilerini güncellediğimiz için put olsun.
 	@PreAuthorize("hasRole('ROLE_ADMIN')or hasRole('ROLE_USER')")
 	
 	public ResponseEntity<List<Book>> getMyBooks(HttpServletRequest request){
 		String mail=(String) request.getAttribute("mail");
 		List<Book> books = bookService.getMyBooks(mail);
-		return ResponseEntity.ok(books);
-		
+		return ResponseEntity.ok(books);		
 	}
 	
+	//alınabilir kitaplar	
+	@GetMapping("/availableBooks")
+	@PreAuthorize("hasRole('ROLE_ADMIN')or hasRole('ROLE_USER')")
+	public ResponseEntity<List<Book>> getAvailableBooks( Boolean isAvailable) {
+        isAvailable=true;
+
+        List<Book> books=  bookService.getAvailableBooks(isAvailable);
+        return ResponseEntity.ok(books);
+}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	//alınmış kitaplar.	
+	@GetMapping("/getNotAvailableBooks")
+	@PreAuthorize("hasRole('ROLE_ADMIN')or hasRole('ROLE_USER')")
+	public ResponseEntity<List<Book>> getNotAvailableBooks( Boolean isAvailable) {
+        isAvailable=false;
+
+        List<Book> books=  bookService.getAvailableBooks(isAvailable);
+        return ResponseEntity.ok(books);
+}	
 }

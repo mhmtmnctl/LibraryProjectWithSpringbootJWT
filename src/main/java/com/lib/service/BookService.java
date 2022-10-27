@@ -77,16 +77,28 @@ public class BookService {
 	}
 	
 	//kullanıcı kitap alma metodu
-	public void getBook(Long id,String mail) {
+	//alinacak kitap baskasinda yoksa alinabilir
+    //TODO hata kodunu yonetmek lazim
+    //kullanici 3 den fazla kitap alamaz
+    public void getBook(Long id,String mail) {
 
-		
-			Book book= findBook(id);
-			
-			book.setOwner(mail);
-			book.setStatus(false);
-			book.setDate(LocalDate.now().toString());
-			bookRepository.save(book);										
-	}
+        int ownerBooks = 0;
+
+        for (Book  w: bookRepository.findAllByOwner(mail)) {
+            ownerBooks++;
+        }
+
+        Book book = findBook(id);
+        if (book.getStatus()==true && ownerBooks<3) {
+            book.setOwner(mail);
+            book.setStatus(false);
+            book.setDate(LocalDate.now().toString());
+            bookRepository.save(book);
+        }else {
+            System.out.println(id+" li kitap baskasi tarafindan alinmistir");
+            //throw new ResourceNotFoundException("Could not found available book with that id : "+id);
+        }
+    }
 
 	public void returnBook(Long id, String mail) {
 		Book book= findBook(id);
@@ -100,8 +112,12 @@ public class BookService {
 	public List<Book> getMyBooks(String mail) {
 		
 		List<Book> myBooks= bookRepository.findAllByOwner(mail);		
-		
 		return myBooks;
 	}
 
+	public List<Book> getAvailableBooks(Boolean isAvaible) {
+		
+		return bookRepository.getAvailableBooks(isAvaible);
+	
+	}
 }
