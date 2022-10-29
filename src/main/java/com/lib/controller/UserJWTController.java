@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.lib.controller.dto.AddBookRequestDTO;
+import com.lib.controller.dto.ListBooksForUsersDTO;
 import com.lib.controller.dto.LoginRequest;
 import com.lib.controller.dto.RegisterRequest;
 import com.lib.controller.dto.UpdateRequestDTO;
@@ -118,14 +119,15 @@ public class UserJWTController{
 		return new ResponseEntity<>(map,HttpStatus.CREATED);		
 	}
 	
-	//kitap listeleme
-	
+	//kitap listeleme admin için
 	@GetMapping("/listBooks")
 	@PreAuthorize("hasRole('ROLE_ADMIN')or hasRole('ROLE_USER')")
 	public ResponseEntity<List<Book>> getAllBooks() {		
 		List<Book> books=  bookService.getAllBooks();
 		return ResponseEntity.ok(books);		
 	}
+	
+	
 	
 	//kitap silme	
 	@DeleteMapping("/deleteBook/{id}")
@@ -150,10 +152,7 @@ public class UserJWTController{
 		return new ResponseEntity<>(map,HttpStatus.OK);
 	}
 	
-	//kullanıcı kitap alcak...
-	//todo alınmışsa alamasın...
-	//max 3 kitap alabilsin.
-	@PutMapping("/getBook/{id}")//kitap bilgilerini güncellediğimiz için put olsun.
+	@PutMapping("/getBook/{id}")
 	@PreAuthorize("hasRole('ROLE_USER')")
 	 public ResponseEntity<Map<String,String>> getBook(@PathVariable("id") Long id,HttpServletRequest request) {
 	
@@ -181,7 +180,7 @@ public class UserJWTController{
         return new ResponseEntity<>(map,HttpStatus.OK);		
 	}	
 	//kullanıcının aldığı kitaplar.	
-	@GetMapping("/listMyBooks")//kitap bilgilerini güncellediğimiz için put olsun.
+	@GetMapping("/listMyBooks")
 	@PreAuthorize("hasRole('ROLE_ADMIN')or hasRole('ROLE_USER')")
 	
 	public ResponseEntity<List<Book>> getMyBooks(HttpServletRequest request){
@@ -208,5 +207,23 @@ public class UserJWTController{
 
         List<Book> books=  bookService.getAvailableBooks(isAvailable);
         return ResponseEntity.ok(books);
-}	
+}
+	
+	@GetMapping("/listBooksForUser")
+	@PreAuthorize("hasRole('ROLE_USER')")
+	public ResponseEntity<List<Object>> getAllBooksForUser() {		
+		List<Object> books=  bookService.getBooksForUser();
+		return ResponseEntity.ok(books);		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

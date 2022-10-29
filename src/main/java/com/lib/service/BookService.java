@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.lib.controller.dto.AddBookRequestDTO;
+import com.lib.controller.dto.ListBooksForUsersDTO;
 import com.lib.domain.Book;
 import com.lib.exception.ResourceNotFoundException;
 import com.lib.repository.BookRepository;
@@ -119,5 +120,10 @@ public class BookService {
 		
 		return bookRepository.getAvailableBooks(isAvaible);
 	
+	}
+
+	public List<Object> getBooksForUser() {
+			
+		return bookRepository.BooksForUser();
 	}
 }
